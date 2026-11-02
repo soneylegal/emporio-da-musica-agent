@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "emporio-da-musica-agent"
+version = "0.1.0"
+description = "Agente inteligente de atendimento para a Empório da Música"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+    { name = "AI Engineer Candidate" }
+]
+dependencies = [
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "rich>=13.0.0",
+    "google-genai>=0.1.0",
+    "openai>=1.0.0",
+    "streamlit>=1.30.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+emporio-cli = "emporio_agent.interfaces.cli:main"
+emporio-web = "emporio_agent.interfaces.web:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+

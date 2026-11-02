@@ -1,0 +1,130 @@
+{
+  "store_info": {
+    "name": "Empório da Música",
+    "legal_name": "Empório da Música Instrumentos Musicais Ltda.",
+    "cnpj": "12.345.678/0001-90",
+    "founded_year": 2008,
+    "address": "Rua 14 de Maio, 3200 — Centro, Campo Grande - MS, CEP 79202-333",
+    "phone": "(67) 3341-4444",
+    "whatsapp": "(67) 3321-4500",
+    "email": "contato@empóriodamusica.com.br",
+    "mission": "Democratizar o acesso a instrumentos musicais de qualidade na região Centro-Oeste, oferecendo atendimento especializado e preços competitivos.",
+    "catalog_overview": "Mais de 300 instrumentos incluindo guitarras, baixos, violões, baterias, teclados, instrumentos de sopro, cordas orquestrais e ukuleles."
+  },
+  "business_scope": {
+    "exclusivity": "Trabalhamos exclusivamente com instrumentos musicais.",
+    "prohibited_items": [
+      "cordas",
+      "palhetas",
+      "cabos",
+      "cases",
+      "bags",
+      "pedais",
+      "pedaleiras",
+      "amplificadores",
+      "cubos",
+      "suportes",
+      "afinadores avulsos"
+    ],
+    "policy_for_accessories": "A loja NÃO comercializa acessórios, cabos, cordas, pedais ou amplificadores. Pedidos sobre esses itens devem ser educadamente redirecionados para lojas especializadas parceiras."
+  },
+  "opening_hours": {
+    "weekdays": "Segunda a Sexta-feira: 09:00 às 18:00",
+    "saturday": "Sábado: 09:00 às 13:00",
+    "sunday_and_holidays": "Domingos e Feriados: Fechado",
+    "off_hours_rule": "Fora do expediente comercial, informar com cordialidade que a equipe está descansando e indicar o horário exato de reabertura."
+  },
+  "payment_methods": {
+    "pix": {
+      "discount": "5% de desconto à vista sobre o preço de tabela",
+      "restrictions": "O desconto de PIX NÃO é cumulativo com produtos já em preço promocional."
+    },
+    "debit_card": "Pagamento à vista, todas as bandeiras aceitas.",
+    "credit_card": {
+      "installments": "Até 12x sem juros",
+      "min_installment": "Parcela mínima de R$ 100,00 (para até 12x)",
+      "rules": [
+        "Parcelamento em até 3x: sem juros e sem valor mínimo de parcela (exceto abaixo de R$ 50,00).",
+        "Parcelamento de 4x a 6x: sem juros, parcela mínima de R$ 80,00.",
+        "Parcelamento de 7x a 12x: sem juros, parcela mínima de R$ 100,00."
+      ]
+    },
+    "boleto": "Pagamento à vista, compensação em até 3 dias úteis.",
+    "combined_payment": "Permitida a combinação de pagamentos (ex.: PIX + cartão) para compras acima de R$ 2.000,00."
+  },
+  "shipping_and_delivery": {
+    "local_metro": {
+      "region": "Campo Grande e Região Metropolitana",
+      "free_shipping_threshold": "Frete grátis para pedidos acima de R$ 500,00",
+      "fixed_fee": "R$ 35,00 para pedidos abaixo de R$ 500,00",
+      "lead_time": "1 a 3 dias úteis",
+      "carrier": "Motoboy próprio. O cliente é contactado por telefone antes da entrega."
+    },
+    "other_cities": {
+      "carriers": [
+        {"name": "SEDEX (Correios)", "lead_time": "2 a 5 dias úteis", "insurance": true},
+        {"name": "Jadlog (.package)", "lead_time": "3 a 8 dias úteis", "insurance": true},
+        {"name": "PAC (Correios)", "lead_time": "5 a 12 dias úteis", "insurance": true}
+      ],
+      "large_items": "Instrumentos de grande porte (baterias acústicas, pianos digitais, contrabaixos) podem exigir cotação individual de frete especial.",
+      "avaria_rule": "Todos os envios possuem seguro. Em caso de avaria na embalagem, o cliente deve recusar a entrega e contatar imediatamente a loja."
+    },
+    "tracking_code_format": "Padrão 'BR' seguido de 9 caracteres alfanuméricos e 'BR' (ex.: BR4K7M2X9P1BR), consultável nos Correios ou Jadlog."
+  },
+  "returns_and_exchanges": {
+    "right_of_withdrawal": {
+      "period": "Até 7 (sete) dias corridos após o recebimento do produto",
+      "applies_to": "Compras online",
+      "justification_required": false,
+      "conditions": "Produto na embalagem original, sem sinais de uso, acompanhado de todos os acessórios e manuais.",
+      "refund_term": "Reembolso na mesma forma de pagamento original em até 10 dias úteis.",
+      "shipping_cost": "Frete de devolução por conta da loja em caso de arrependimento comprovado dentro do prazo legal."
+    },
+    "defects": {
+      "period": "Até 30 (trinta) dias corridos após a compra diretamente com a Empório da Música",
+      "after_30_days": "O cliente deve acionar a garantia diretamente com o fabricante (a loja pode intermediar mediante solicitação).",
+      "exclusions": "Danos por mau uso, quedas, exposição a umidade excessiva ou modificações não autorizadas não são cobertos."
+    },
+    "preference_exchange": {
+      "period": "Até 7 dias corridos para troca de cor, modelo ou tamanho",
+      "conditions": "Produto sem uso e na embalagem original, sujeito à disponibilidade em estoque. Diferença de valores cobrada ou estornada."
+    },
+    "non_returnable_items": [
+      "Instrumentos com personalização ou ajustes sob encomenda (setup, regulagem especial feita sob medida).",
+      "Produtos adquiridos em promoções de liquidação com aviso explícito de 'venda final'.",
+      "Boquilhas de instrumentos de sopro por questões sanitárias e de higiene."
+    ]
+  },
+  "promotions_policy": {
+    "rules": [
+      "Promoções não são cumulativas.",
+      "O desconto de PIX (5%) não se aplica sobre preços já promocionais.",
+      "Promoções estão sujeitas à disponibilidade de estoque, sem direito a rain check (reserva de preço) após esgotar.",
+      "Preços promocionais devem sempre ser apresentados ao lado do preço original de tabela e do percentual de desconto.",
+      "Se uma promoção estiver expirada/inativa no sistema, informar com total transparência e apresentar o valor regular atual."
+    ],
+    "main_campaigns": [
+      {"name": "Aniversário da Loja", "month": "Agosto", "discount": "10% a 25% em itens selecionados"},
+      {"name": "Black Friday", "month": "Novembro", "discount": "15% a 30% em todo o catálogo"},
+      {"name": "Volta às Aulas", "month": "Fevereiro", "discount": "Descontos especiais para estudantes"},
+      {"name": "Semana do Músico", "month": "Novembro (22 de nov)", "discount": "Promoções temáticas"}
+    ]
+  },
+  "warranty": {
+    "legal_warranty": "90 dias garantidos por lei (Código de Defesa do Consumidor) contra defeitos de fabricação.",
+    "manufacturer_warranty": "Varia de 6 meses a 2 anos dependendo da marca (especificado no termo de garantia do produto).",
+    "exclusions": [
+      "Desgaste natural de peças (trastes, cordas, feltros, palhetas de sopro)",
+      "Danos provocados por mau uso, umidade extrema, quedas ou acidentes",
+      "Alterações ou manutenções realizadas por assistências não credenciadas"
+    ]
+  },
+  "customer_service_guidelines": {
+    "tone_of_voice": "Informal porém profissional, empático, conhecedor de música ('como um amigo de confiança que entende de instrumentos'). Evitar tom robótico ou excessivamente distante.",
+    "response_time": "Até 5 minutos durante o horário de expediente.",
+    "data_integrity_rule": "NUNCA inventar ou chutar preços, prazos ou disponibilidade. Sempre verificar a ferramenta de dados antes de responder.",
+    "out_of_stock_rule": "Se um instrumento estiver esgotado, informar educadamente que está temporariamente indisponível e sugerir modelos similares disponíveis na mesma categoria ou faixa de preço.",
+    "complaint_rule": "Ouvir com empatia, registrar a reclamação e informar prazo de retorno da gerência em até 24 horas úteis."
+  }
+}
+

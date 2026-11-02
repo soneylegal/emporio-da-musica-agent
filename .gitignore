@@ -1,0 +1,44 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables
+.env
+*.local.env
+
+# SQLite databases generated at runtime
+*.db
+*.sqlite3
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local planning & raw challenge source zip/folder
+PLANO_DESAFIO_TECNICO.md
+Desafio_Técnico_AI_Engineer*
+Desafio_Tecnico_AI_Engineer*
+
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# MacOS / OS metadata
+.DS_Store
+Thumbs.db

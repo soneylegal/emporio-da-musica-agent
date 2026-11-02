@@ -1,0 +1,64 @@
+services:
+  # Interface Web interativa (Streamlit)
+  agent-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: emporio_agent_web
+    ports:
+      - "8501:8501"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/src
+    volumes:
+      - .:/app
+    command: ["streamlit", "run", "src/emporio_agent/interfaces/web.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+  # Interface CLI interativa via terminal
+  agent-cli:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: emporio_agent_cli
+    stdin_open: true
+    tty: true
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app/src
+    volumes:
+      - .:/app
+    command: ["python", "-m", "emporio_agent.interfaces.cli"]
+
+  # Execução da suíte de testes
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: emporio_agent_test
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - PYTHONPATH=/app/src
+    volumes:
+      - .:/app
+    command: ["pytest", "tests/", "-v"]
+
+  # Ingestão e recriação do banco de dados SQLite
+  seed-db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: emporio_seed_db
+    environment:
+      - PYTHONPATH=/app/src
+    volumes:
+      - .:/app
+    command: ["python", "-m", "emporio_agent.db.loader"]
+
