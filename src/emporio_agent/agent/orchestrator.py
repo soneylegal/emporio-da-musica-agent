@@ -53,6 +53,9 @@ class EmporioAgent:
             # Caso o modelo tenha solicitado chamada de ferramenta (Tool Call)
             if response.get("type") == "tool_calls":
                 tool_calls = response.get("tool_calls", [])
+                # Registra a chamada de ferramenta feita pelo assistente
+                self.messages.append({"role": "assistant", "tool_calls": tool_calls})
+
                 for call in tool_calls:
                     fn_name = call.get("name")
                     fn_args = call.get("arguments", {})

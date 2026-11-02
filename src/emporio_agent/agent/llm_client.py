@@ -1,12 +1,31 @@
-"""Cliente desacoplado de LLMs com suporte a Gemini, OpenAI, Groq, Ollama e Mock para testes."""
+"""Cliente desacoplado de LLMs com suporte nativo a Gemini REST, OpenAI, Groq, Ollama e Mock."""
 
 import json
 import logging
 import os
 import re
+import urllib.request
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
+
+
+def load_env_if_needed():
+    """Carrega o arquivo .env da raiz caso ainda não tenha sido carregado pelo ambiente."""
+    env_path = Path(__file__).resolve().parent.parent.parent.parent / ".env"
+    if env_path.exists():
+        with open(env_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    k, v = line.split("=", 1)
+                    k, v = k.strip(), v.strip()
+                    if k and k not in os.environ:
+                        os.environ[k] = v
+
+
+load_env_if_needed()
 
 
 class LLMClient:
@@ -18,6 +37,7 @@ class LLMClient:
         model: Optional[str] = None,
         api_key: Optional[str] = None,
     ):
+        load_env_if_needed()
         self.provider = (provider or os.getenv("LLM_PROVIDER") or "gemini").lower()
         self.model = model or os.getenv("LLM_MODEL") or self._default_model_for_provider(self.provider)
         self.api_key = api_key or self._get_api_key_for_provider(self.provider)
@@ -46,14 +66,14 @@ class LLMClient:
         system_instruction: str,
     ) -> Dict[str, Any]:
         """Executa uma rodada de geração com o modelo selecionado."""
-        if self.provider == "gemini" and self.api_key:
+        if self.provider == "gemini" and self.api_key and not self.api_key.startswith("sua_chave"):
             try:
-                return self._call_gemini(messages, tools_schemas, system_instruction)
+                return self._call_gemini_rest(messages, tools_schemas, system_instruction)
             except Exception as e:
                 logger.warning(f"Falha ao chamar API Gemini ({e}). Alternando para mock.")
                 return self._call_mock(messages, tools_schemas, system_instruction)
 
-        elif self.provider in ("openai", "groq") and self.api_key:
+        elif self.provider in ("openai", "groq") and self.api_key and not self.api_key.startswith("sua_chave"):
             try:
                 return self._call_openai(messages, tools_schemas, system_instruction)
             except Exception as e:
@@ -70,63 +90,106 @@ class LLMClient:
         # Provedor Mock padrão (funciona 100% offline sem chaves de API externas)
         return self._call_mock(messages, tools_schemas, system_instruction)
 
-    def _call_gemini(
+    def _call_gemini_rest(
         self,
         messages: List[Dict[str, Any]],
         tools_schemas: List[Dict[str, Any]],
         system_instruction: str,
     ) -> Dict[str, Any]:
-        """Chamada nativa utilizando a biblioteca google-genai."""
-        from google import genai
-        from google.genai import types
+        """Chamada direta à API REST oficial do Gemini v1beta (zero dependências externas)."""
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent?key={self.api_key}"
 
-        client = genai.Client(api_key=self.api_key)
+        # Schemas de funções para Gemini
+        gemini_tools = [
+            {
+                "function_declarations": [
+                    {
+                        "name": s["name"],
+                        "description": s["description"],
+                        "parameters": s.get("parameters"),
+                    }
+                    for s in tools_schemas
+                ]
+            }
+        ]
 
-        # Converte schemas de ferramentas para formato Gemini
-        gemini_tools = []
-        for schema in tools_schemas:
-            gemini_tools.append(
-                types.Tool(
-                    function_declarations=[
-                        types.FunctionDeclaration(
-                            name=schema["name"],
-                            description=schema["description"],
-                            parameters=schema.get("parameters"),
-                        )
-                    ]
-                )
-            )
-
-        # Monta histórico de conteúdos
+        # Monta os contents com suporte a alternância de turnos e function responses
         contents = []
         for msg in messages:
             role = msg.get("role")
             if role == "system":
                 continue
-            gemini_role = "user" if role in ("user", "tool") else "model"
-            content = msg.get("content", "")
-            contents.append(types.Content(role=gemini_role, parts=[types.Part.from_text(text=str(content))]))
 
-        config = types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            tools=gemini_tools if gemini_tools else None,
-            temperature=0.2,
+            if role == "user":
+                contents.append({
+                    "role": "user",
+                    "parts": [{"text": str(msg.get("content", ""))}]
+                })
+            elif role == "assistant":
+                parts = []
+                if msg.get("tool_calls"):
+                    for tc in msg["tool_calls"]:
+                        parts.append({
+                            "functionCall": {
+                                "name": tc["name"],
+                                "args": tc.get("arguments", {})
+                            }
+                        })
+                elif msg.get("content"):
+                    parts.append({"text": str(msg["content"])})
+
+                if parts:
+                    contents.append({"role": "model", "parts": parts})
+
+            elif role == "tool":
+                fn_name = msg.get("tool_name", "tool")
+                contents.append({
+                    "role": "function",
+                    "parts": [{
+                        "functionResponse": {
+                            "name": fn_name,
+                            "response": {"name": fn_name, "content": msg.get("content", {})}
+                        }
+                    }]
+                })
+
+        payload = {
+            "system_instruction": {"parts": [{"text": system_instruction}]},
+            "contents": contents,
+            "tools": gemini_tools if gemini_tools else None,
+            "generationConfig": {"temperature": 0.2}
+        }
+
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"}
         )
 
-        response = client.models.generate_content(
-            model=self.model,
-            contents=contents,
-            config=config,
-        )
+        with urllib.request.urlopen(req, timeout=25) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
 
-        # Verifica se o modelo solicitou chamada de ferramenta
-        if response.function_calls:
-            calls = []
-            for fc in response.function_calls:
-                calls.append({"name": fc.name, "arguments": dict(fc.args)})
-            return {"type": "tool_calls", "tool_calls": calls}
+        candidate = data.get("candidates", [{}])[0]
+        content_obj = candidate.get("content", {})
+        parts = content_obj.get("parts", [])
 
-        return {"type": "message", "content": response.text or ""}
+        # Checa se o Gemini solicitou tool calls
+        tool_calls = []
+        text_parts = []
+        for p in parts:
+            if "functionCall" in p:
+                fc = p["functionCall"]
+                tool_calls.append({
+                    "name": fc.get("name"),
+                    "arguments": fc.get("args", {})
+                })
+            elif "text" in p:
+                text_parts.append(p["text"])
+
+        if tool_calls:
+            return {"type": "tool_calls", "tool_calls": tool_calls}
+
+        return {"type": "message", "content": "".join(text_parts)}
 
     def _call_openai(
         self,
@@ -409,4 +472,3 @@ class LLMClient:
             }
 
         return {"type": "message", "content": f"Informação obtida com sucesso: {result}"}
-

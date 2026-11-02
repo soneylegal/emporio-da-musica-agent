@@ -27,12 +27,6 @@ dist/
 .coverage
 htmlcov/
 
-# Local planning & raw challenge source zip/folder
-PLANO_DESAFIO_TECNICO.md
-Desafio_Técnico_AI_Engineer*
-Desafio_Tecnico_AI_Engineer*
-
-
 # IDE & Editor files
 .vscode/
 .idea/
